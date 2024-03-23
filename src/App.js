@@ -42,7 +42,7 @@ function App() {
   // array안에 아무것도 안주면 componentDidMount()처럼 작동(렌더 후 바로 실행)
   useEffect(() => {
     getCurrentLocation()
-  }, [])
+  }, [getCurrentLocation])
   return (
     <div>
       <div className='background'></div>
