@@ -43,8 +43,10 @@ function App() {
   return (
     <div>
       <div className='background'></div>
-      <WeatherBox />
-      <WeatherButton />
+      <div class="container">
+        <WeatherBox />
+        <WeatherButton />
+      </div>
     </div>
   );
 }
