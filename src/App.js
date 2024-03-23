@@ -13,6 +13,8 @@ import WeatherButton from './component/WeatherButton';
 
 function App() {
 
+  const [weather, setWeather] = useState(null)
+
   const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
 
   const getCurrentLocation = () => {
@@ -27,12 +29,13 @@ function App() {
   };
 
   const getWeatherByCurrentLocation = async(lat, lon) => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
     let response = await fetch(url)
     let data = await response.json();
     console.log("data1 " + data)
     console.log("data2 " + JSON.stringify(data, null, "\t"))
-    console.log(data.weather)
+    
+    setWeather(data);
   }
 
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
@@ -43,8 +46,8 @@ function App() {
   return (
     <div>
       <div className='background'></div>
-      <div class="container">
-        <WeatherBox />
+      <div className="container">
+        <WeatherBox weather = {weather}/>
         <WeatherButton />
       </div>
     </div>

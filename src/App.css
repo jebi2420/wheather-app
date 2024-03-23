@@ -18,9 +18,19 @@
 }
 
 .weatherBox{
-    width: 30em;
-    height: 15em;
-    padding: 2em;
+    /* width: 30em;
+    height: 15em; */
+    padding: 4em;
     background-color: rgba(255, 255, 255, 0.856);
     border-radius: 20px;
+    margin-bottom: 2em;
+}
+
+.btn-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-container Button{
+    margin-right: 0.5em;
 }
