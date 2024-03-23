@@ -14,7 +14,6 @@ import WeatherButton from './component/WeatherButton';
 function App() {
 
   const [weather, setWeather] = useState(null)
-
   const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
 /*
   const getCurrentLocation = () => {
@@ -27,7 +26,7 @@ function App() {
     });
     console.log("getCurrentLocation()")
   };
-*/
+*//*
   const getWeatherByCurrentLocation = async(lat, lon) => {
     let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
     let response = await fetch(url)
@@ -37,7 +36,7 @@ function App() {
     
     setWeather(data);
   }
-
+*/
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
   // array안에 아무것도 안주면 componentDidMount()처럼 작동(렌더 후 바로 실행)
   useEffect(() => {
@@ -46,6 +45,16 @@ function App() {
         let lat = position.coords.latitude;
         let lon = position.coords.longitude;
         console.log("현재위치: "+ lat, lon)
+
+        const getWeatherByCurrentLocation = async(lat, lon) => {
+          let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+          let response = await fetch(url)
+          let data = await response.json();
+          console.log("data1 " + data)
+          console.log("data2 " + JSON.stringify(data, null, "\t"))
+          
+          setWeather(data);
+        }
   
         getWeatherByCurrentLocation(lat, lon)
       });
@@ -53,7 +62,7 @@ function App() {
     };
 
     getCurrentLocation();
-  }, [getWeatherByCurrentLocation])
+  }, [])
 
   return (
     <div>
