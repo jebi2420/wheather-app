@@ -10,7 +10,7 @@ import './App.css';
 
 function App() {
 
-  const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
+  //const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
 
   const getCurrentLocation = () => {
     // 귀찮으니까 그냥 랜덤함수로 받아오기
@@ -18,17 +18,27 @@ function App() {
       let lat = position.coords.latitude;
       let lon = position.coords.longitude;
       console.log("현재위치: "+ lat, lon)
-      
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
-      console.log("url: ", url)
-      const response = await fetch(url)
-      console.log("response" + response)
 
-      const data = await response.json();
-      console.log("data : " + data.weather)
+      getWeatherByCurrentLocation(lat, lon)
+      
+      // const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+      // console.log("url: ", url)
+      // const response = await fetch(url)
+      // console.log("response" + response)
+
+      // const data = await response.json();
+      // console.log("data : " + data.weather)
     });
     console.log("getCurrentLocation()")
   };
+
+  const getWeatherByCurrentLocation = async(lat, lon) => {
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=0b278711fbf2019ee1f170c39577cb7e`;
+    let response = await fetch(url)
+    let data = await response.json();
+    console.log("data1 " + data)
+    console.log("data2 " + JSON.stringify(data, null, "\t"))
+  }
 
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
   // array안에 아무것도 안주면 componentDidMount()처럼 작동(렌더 후 바로 실행)
