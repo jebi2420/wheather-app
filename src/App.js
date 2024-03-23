@@ -38,6 +38,7 @@ function App() {
     let data = await response.json();
     console.log("data1 " + data)
     console.log("data2 " + JSON.stringify(data, null, "\t"))
+    console.log(data.weather)
   }
 
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
