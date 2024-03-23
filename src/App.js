@@ -10,12 +10,22 @@ import './App.css';
 
 function App() {
 
+  const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
+
   const getCurrentLocation = () => {
     // 귀찮으니까 그냥 랜덤함수로 받아오기
-    navigator.geolocation.getCurrentPosition((position) => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
       let lat = position.coords.latitude;
       let lon = position.coords.longitude;
       console.log("현재위치: "+ lat, lon)
+      
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+      console.log("url: ", url)
+      const response = await fetch(url)
+      console.log("response" + response)
+
+      const data = await response.json();
+      console.log("data : " + data.weather)
     });
     console.log("getCurrentLocation()")
   };
