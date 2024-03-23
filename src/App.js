@@ -16,7 +16,7 @@ function App() {
   const [weather, setWeather] = useState(null)
 
   const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
-
+/*
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(async (position) => {
       let lat = position.coords.latitude;
@@ -27,7 +27,7 @@ function App() {
     });
     console.log("getCurrentLocation()")
   };
-
+*/
   const getWeatherByCurrentLocation = async(lat, lon) => {
     let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
     let response = await fetch(url)
@@ -41,8 +41,20 @@ function App() {
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
   // array안에 아무것도 안주면 componentDidMount()처럼 작동(렌더 후 바로 실행)
   useEffect(() => {
-    getCurrentLocation()
-  }, [getCurrentLocation])
+    const getCurrentLocation = () => {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        let lat = position.coords.latitude;
+        let lon = position.coords.longitude;
+        console.log("현재위치: "+ lat, lon)
+  
+        getWeatherByCurrentLocation(lat, lon)
+      });
+      console.log("getCurrentLocation()")
+    };
+
+    getCurrentLocation();
+  }, [])
+
   return (
     <div>
       <div className='background'></div>
