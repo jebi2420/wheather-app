@@ -13,12 +13,13 @@ import WeatherButton from './component/WeatherButton';
 
 function App() {
   const [weather, setWeather] = useState(null)
-  const cities = ['paris', 'new york', 'tokyo', 'seoul']
+  const [city, setCity] = useState('')
+  const cities = ['hongkong', 'new york', 'tokyo', 'seoul']
+  const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
 
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
   // array안에 아무것도 안주면 componentDidMount()처럼 작동(렌더 후 바로 실행)
   useEffect(() => {
-    const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
 
     const getCurrentLocation = () => {
       navigator.geolocation.getCurrentPosition(async (position) => {
@@ -30,8 +31,7 @@ function App() {
           let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
           let response = await fetch(url)
           let data = await response.json();
-          console.log("data1 " + data)
-          console.log("data2 " + JSON.stringify(data, null, "\t"))
+          console.log("data " + JSON.stringify(data, null, "\t"))
           
           setWeather(data);
         }
@@ -41,15 +41,30 @@ function App() {
       console.log("getCurrentLocation()")
     };
 
-    getCurrentLocation();
-  }, [])
+    if(city === ""){
+      getCurrentLocation();
+    }else{
+      // city 가 바뀌면 useEffect 함수가 호출됨
+      getWeatherByCity()
+    }
+  }, [city])
+
+  // 도시별 날씨 들고오기
+  const getWeatherByCity = async () => {
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+    let response = await fetch(url)
+    let data = await response.json();
+    console.log("cityWeatherdata :" + JSON.stringify(data, null, "\t"))
+
+    setWeather(data);
+  }
 
   return (
     <div>
       <div className='background'></div>
       <div className="container">
         <WeatherBox weather = {weather}/>
-        <WeatherButton cities = {cities} />
+        <WeatherButton cities = {cities} setCity = {setCity}/>
       </div>
     </div>
   );
