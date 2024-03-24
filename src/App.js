@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import WeatherBox from './component/WeatherBox';
@@ -21,7 +21,7 @@ function App() {
   const cities = ['hongkong', 'new york', 'tokyo', 'seoul']
   const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
 
-  const getWeatherByCurrentLocation = async(lat, lon) => {
+  const getWeatherByCurrentLocation = useCallback(async(lat, lon) => {
     try {
       let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
       // fetch 중일때만 로딩 스피너 나타나게
@@ -36,9 +36,9 @@ function App() {
       setAPIError(err.message);
       setLoading(false);
     }
-  }
+  }, [API_KEY]);
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(async (position) => {
       let lat = position.coords.latitude;
       let lon = position.coords.longitude;
@@ -46,13 +46,13 @@ function App() {
       getWeatherByCurrentLocation(lat, lon)
     });
     console.log("getCurrentLocation()")
-  };
+  },[getWeatherByCurrentLocation]);
 
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
   // array안에 아무것도 안주면 componentDidMount()처럼 작동(렌더 후 바로 실행)
 
   // 도시별 날씨 들고오기
-  const getWeatherByCity = async () => {
+  const getWeatherByCity = useCallback(async () => {
     try {
       if (!city) {
         setLoading(true);
@@ -74,7 +74,7 @@ function App() {
       setAPIError(err.message);
       setLoading(false);
     }
-  }
+  }, [API_KEY, city, getCurrentLocation]);
 
 
   useEffect(() => {
@@ -86,7 +86,7 @@ function App() {
       getWeatherByCity();
     }
 
-  }, [city, getCurrentLocation, getWeatherByCity]);
+  }, [city]);
 
 
   const handleCityChange = (city) => {
