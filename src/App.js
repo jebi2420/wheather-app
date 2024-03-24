@@ -86,7 +86,7 @@ function App() {
       getWeatherByCity();
     }
 
-  }, [city]);
+  }, [city, getCurrentLocation, getWeatherByCity]);
 
 
   const handleCityChange = (city) => {
