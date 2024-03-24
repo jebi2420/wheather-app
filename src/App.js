@@ -13,6 +13,7 @@ import WeatherButton from './component/WeatherButton';
 
 function App() {
   const [weather, setWeather] = useState(null)
+  const cities = ['paris', 'new york', 'tokyo', 'seoul']
 
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
   // array안에 아무것도 안주면 componentDidMount()처럼 작동(렌더 후 바로 실행)
@@ -48,7 +49,7 @@ function App() {
       <div className='background'></div>
       <div className="container">
         <WeatherBox weather = {weather}/>
-        <WeatherButton />
+        <WeatherButton cities = {cities} />
       </div>
     </div>
   );
