@@ -3,8 +3,8 @@ import React from 'react'
 const WeatherBox = ({weather}) => {
     console.log("weather?", weather)
 
-    let cel = weather?.main.temp;
-    let fah = (cel + 9/5) + 32
+    let cel = weather?.main.temp.toFixed(1);
+    let fah = ((cel * 9/5) + 32).toFixed(1);
 
   return (
     <div className='weatherBox'>
