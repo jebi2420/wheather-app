@@ -1,16 +1,17 @@
 import React from 'react'
 import { Button } from 'react-bootstrap';
 
-const WeatherButton = ({cities, setCity, selectedCity,handleCityChange}) => {
+const WeatherButton = ({cities, setCity, selectedCity, handleCityChange}) => {
   console.log("cities?", cities)
+  console.log("selectedCity?", selectedCity === null ? "null" : "correct")
   return (
     <div>
       <div className='btn-container'>
           <Button 
-            variant={`${selectedCity === null ? "dark" : "warning"}`}
+            variant={`${selectedCity === null ? "warning" : "dark"}`}
             onClick ={() => handleCityChange("current")}
           >
-              현재 위치
+              current
           </Button>
           
           {cities.map((item, index) =>(

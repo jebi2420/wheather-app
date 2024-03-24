@@ -14,61 +14,80 @@ import ClipLoader from "react-spinners/ClipLoader";
 
 function App() {
   const [weather, setWeather] = useState(null)
-  const [city, setCity] = useState('')
+  const [city, setCity] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [apiError, setAPIError] = useState("");
 
   const cities = ['hongkong', 'new york', 'tokyo', 'seoul']
   const API_KEY = `0b278711fbf2019ee1f170c39577cb7e`;
 
+  const getWeatherByCurrentLocation = async(lat, lon) => {
+    try {
+      let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+      // fetch 중일때만 로딩 스피너 나타나게
+      setLoading(true)
+      let response = await fetch(url)
+      let data = await response.json();
+      console.log("data " + JSON.stringify(data, null, "\t"))
+      
+      setWeather(data);
+      setLoading(false);
+    }catch (err) {
+      setAPIError(err.message);
+      setLoading(false);
+    }
+  }
+
+  const getCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
+      console.log("현재위치: "+ lat, lon)
+      getWeatherByCurrentLocation(lat, lon)
+    });
+    console.log("getCurrentLocation()")
+  };
+
   // 앱이 실행되자마자 -> useEffect(함수, 배열)
   // array안에 아무것도 안주면 componentDidMount()처럼 작동(렌더 후 바로 실행)
-  useEffect(() => {
-
-    const getCurrentLocation = () => {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        let lat = position.coords.latitude;
-        let lon = position.coords.longitude;
-        console.log("현재위치: "+ lat, lon)
-
-        const getWeatherByCurrentLocation = async(lat, lon) => {
-          let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
-          // fetch 중일때만 로딩 스피너 나타나게
-          setLoading(true)
-          let response = await fetch(url)
-          let data = await response.json();
-          console.log("data " + JSON.stringify(data, null, "\t"))
-          
-          setWeather(data);
-          setLoading(false);
-        }
-  
-        getWeatherByCurrentLocation(lat, lon)
-      });
-      console.log("getCurrentLocation()")
-    };
-
-    // 현재 위치 날씨 가져오기
-    if(city === ""){
-      getCurrentLocation();
-    }else{
-      // city가 바뀌면 useEffect 함수가 호출됨
-      getWeatherByCity()
-    }
-    
-  }, [city])
 
   // 도시별 날씨 들고오기
   const getWeatherByCity = async () => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
-    // fetch 중일때만 로딩 스피너 나타나게
-    setLoading(true)
-    let response = await fetch(url)
-    let data = await response.json();
-    console.log("cityWeatherdata :" + JSON.stringify(data, null, "\t"))
+    try {
+      if (!city) {
+        setLoading(true);
+        getCurrentLocation();
+        return;
+      }
 
-    setWeather(data);
-    setLoading(false);
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+      // fetch 중일때만 로딩 스피너 나타나게
+      setLoading(true)
+      let response = await fetch(url)
+      let data = await response.json();
+      console.log("cityWeatherdata :" + JSON.stringify(data, null, "\t"))
+  
+      setWeather(data);
+      setLoading(false);
+    }catch (err) {
+      console.log(err);
+      setAPIError(err.message);
+      setLoading(false);
+    }
   }
+
+
+  useEffect(() => {
+    if (city === null) {
+      setLoading(true);
+      getCurrentLocation();
+    } else {
+      setLoading(true);
+      getWeatherByCity();
+    }
+
+  }, [city]);
+
 
   const handleCityChange = (city) => {
     if(city === "current"){
@@ -91,7 +110,7 @@ function App() {
               data-testid="loader"
             />
           </div>) 
-          :
+          : !apiError ?
           (<div className="container">
             <WeatherBox weather = {weather}/>
             <WeatherButton 
@@ -100,10 +119,13 @@ function App() {
               setCity = {setCity}
               selectedCity={city}
             />
-          </div>)
-        }
-
-      
+          </div>) 
+          : (
+            (
+              <div>Error: {apiError}</div>
+            )
+          )
+        }      
     </div>
   );
 }
